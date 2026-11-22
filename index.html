@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Progress From Zero to Hero</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HOME VIEW ===== -->
+  <div id="view-home" class="view active">
+    <header class="home-header">
+      <div class="hero-badge">🚀 Selamat Datang, Pelajar!</div>
+      <h1 class="hero-title">Progress From<br><span>Zero to Hero</span></h1>
+      <p class="hero-subtitle">Kelola waktu, tugas, dan kebiasaanmu setiap hari.<br>Satu langkah kecil hari ini, perubahan besar esok hari.</p>
+    </header>
+    <main class="menu-grid">
+      <button class="menu-card" onclick="navigate('pomodoro')">
+        <div class="menu-icon">⏱️</div>
+        <h2>Pomodoro</h2>
+        <p>Tingkatkan fokus belajarmu dengan teknik timer Pomodoro yang terbukti efektif.</p>
+        <span class="menu-cta">Mulai Fokus →</span>
+      </button>
+      <button class="menu-card" onclick="navigate('todolist')">
+        <div class="menu-icon">📋</div>
+        <h2>Todolist</h2>
+        <p>Catat, atur prioritas, dan selesaikan semua tugas pelajaranmu dengan rapi.</p>
+        <span class="menu-cta">Kelola Tugas →</span>
+      </button>
+      <button class="menu-card" onclick="navigate('habit')">
+        <div class="menu-icon">🌱</div>
+        <h2>Habit Tracker</h2>
+        <p>Bangun kebiasaan positif harian dan pantau streak konsistensimu.</p>
+        <span class="menu-cta">Lacak Kebiasaan →</span>
+      </button>
+    </main>
+    <footer class="home-footer">Made with ❤️ for learners everywhere</footer>
+  </div>
+
+  <!-- ===== POMODORO VIEW ===== -->
+  <div id="view-pomodoro" class="view">
+    <div class="view-container">
+      <button class="btn-back" onclick="navigate('home')">← Kembali ke Menu Utama</button>
+      <div class="view-header">
+        <h2>⏱️ Pomodoro Timer</h2>
+        <p>Gunakan teknik Pomodoro untuk memaksimalkan fokus belajarmu.</p>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="pomo-section-label">⏸ Mode Istirahat</div>
+      <div class="pomo-modes">
+        <button class="pomo-mode-btn" data-minutes="5"  onclick="setMode(this, 5, 'Istirahat Singkat')">☕ Istirahat Singkat (5m)</button>
+        <button class="pomo-mode-btn" data-minutes="15" onclick="setMode(this, 15, 'Istirahat Panjang')">🛌 Istirahat Panjang (15m)</button>
+      </div>
+
+      <!-- Focus duration picker -->
+      <div class="pomo-section-label">🎯 Durasi Fokus Belajar</div>
+      <div class="pomo-focus-grid">
+        <button class="pomo-focus-btn"           data-minutes="5"  onclick="setMode(this, 5, 'Fokus Belajar')">5m</button>
+        <button class="pomo-focus-btn"           data-minutes="10" onclick="setMode(this, 10, 'Fokus Belajar')">10m</button>
+        <button class="pomo-focus-btn"           data-minutes="15" onclick="setMode(this, 15, 'Fokus Belajar')">15m</button>
+        <button class="pomo-focus-btn"           data-minutes="20" onclick="setMode(this, 20, 'Fokus Belajar')">20m</button>
+        <button class="pomo-focus-btn active"    data-minutes="25" onclick="setMode(this, 25, 'Fokus Belajar')">25m</button>
+        <button class="pomo-focus-btn"           data-minutes="30" onclick="setMode(this, 30, 'Fokus Belajar')">30m</button>
+        <button class="pomo-focus-btn"           data-minutes="60" onclick="setMode(this, 60, 'Fokus Belajar')">60m</button>
+      </div>
+
+      <!-- Timer display -->
+      <div class="timer-card">
+        <div class="timer-label" id="pomo-label">Fokus Belajar</div>
+        <!-- timer-face: ring + number stacked cleanly -->
+        <div class="timer-face">
+          <div class="timer-ring-wrap">
+            <svg class="timer-ring" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="54"/>
+              <circle class="ring-progress" id="ring-progress" cx="60" cy="60" r="54"
+                stroke-dasharray="339.29" stroke-dashoffset="0"/>
+            </svg>
+          </div>
+          <div class="timer-display" id="pomo-display">25:00</div>
+        </div>
+        <div class="pomo-controls">
+          <button class="btn btn-primary" id="btn-start" onclick="pomodoroStart()">▶ Start</button>
+          <button class="btn btn-secondary" id="btn-pause" onclick="pomodoroPause()" disabled>⏸ Pause</button>
+          <button class="btn btn-outline" onclick="pomodoroReset()">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- Session counter -->
+      <div class="pomo-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="pomo-sessions">0</div>
+          <div class="stat-label">Sesi Fokus Selesai Hari Ini</div>
+        </div>
+      </div>
+
+      <!-- Motivational message -->
+      <div class="pomo-message" id="pomo-message"></div>
+    </div>
+  </div>
+
+  <!-- ===== TODOLIST VIEW ===== -->
+  <div id="view-todolist" class="view">
+    <div class="view-container">
+      <button class="btn-back" onclick="navigate('home')">← Kembali ke Menu Utama</button>
+      <div class="view-header">
+        <h2>📋 Daftar Tugas</h2>
+        <p>Tambah tugas, atur prioritas, dan tandai selesai!</p>
+      </div>
+
+      <!-- Add task form -->
+      <div class="form-card">
+        <div class="form-row">
+          <input type="text" id="todo-name" placeholder="Nama tugas, misal: Kerjakan PR Matematika..." class="form-input" />
+        </div>
+        <div class="form-row two-col">
+          <input type="text" id="todo-subject" placeholder="Mata Pelajaran / Kategori" class="form-input" />
+          <select id="todo-priority" class="form-input">
+            <option value="tinggi">🔴 Prioritas Tinggi</option>
+            <option value="sedang" selected>🟡 Prioritas Sedang</option>
+            <option value="rendah">🟢 Prioritas Rendah</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="addTodo()">+ Tambah Tugas</button>
+          <button class="btn btn-tip" onclick="showStudyTip()" title="Smart Study Tip">💡 Smart Tip</button>
+        </div>
+      </div>
+
+      <!-- Smart tip display -->
+      <div class="tip-box" id="tip-box" style="display:none;"></div>
+
+      <!-- Filter buttons -->
+      <div class="todo-filters">
+        <button class="filter-btn active" onclick="filterTodos('all', this)">Semua</button>
+        <button class="filter-btn" onclick="filterTodos('active', this)">Aktif</button>
+        <button class="filter-btn" onclick="filterTodos('done', this)">Selesai</button>
+      </div>
+
+      <!-- Todo list -->
+      <ul class="todo-list" id="todo-list"></ul>
+      <div class="todo-empty" id="todo-empty">Belum ada tugas. Yuk tambahkan tugas pertamamu! 📚</div>
+    </div>
+  </div>
+
+  <!-- ===== HABIT TRACKER VIEW ===== -->
+  <div id="view-habit" class="view">
+    <div class="view-container view-container--wide">
+      <button class="btn-back" onclick="navigate('home')">← Kembali ke Menu Utama</button>
+      <div class="view-header">
+        <h2>🌱 Habit Tracker — 30 Hari</h2>
+        <p>Klik kotak hari untuk memilih status pengerjaanmu!</p>
+      </div>
+
+      <!-- Add habit form -->
+      <div class="form-card">
+        <div class="form-row">
+          <input type="text" id="habit-name" placeholder="Kebiasaan baru, misal: Baca buku 15 menit..." class="form-input" />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="addHabit()">+ Tambah Kebiasaan</button>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="habit-legend">
+        <span class="legend-item"><span class="legend-dot ld-empty"></span>Belum dipilih</span>
+        <span class="legend-item"><span class="legend-dot ld-done"></span>Sudah dikerjakan</span>
+        <span class="legend-item"><span class="legend-dot ld-pending"></span>Belum dikerjakan</span>
+        <span class="legend-item"><span class="legend-dot ld-skip"></span>Tidak dikerjakan</span>
+      </div>
+
+      <!-- Habit cards list (rendered by JS) -->
+      <div id="habit-list"></div>
+      <div class="todo-empty" id="habit-empty">Belum ada kebiasaan. Mulai bangun rutinitas positifmu! 🌟</div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
